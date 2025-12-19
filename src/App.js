@@ -8,17 +8,23 @@ function App() {
   const [taskText, setTaskText] = useState("");
   const [taskDate, setTaskDate] = useState("");
   const [newStatusText, setNewStatusText] = useState("");
-  
-// Загрузка LocalStorage
+
+  // Загрузка LocalStorage
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const savedStatuses =
-      JSON.parse(localStorage.getItem("statuses")) || [
-        "На очереди",
-        "В работе",
-        "На проверке",
-        "Завершено",
-      ];
+    const savedStatuses = JSON.parse(localStorage.getItem("statuses")) || [
+      "На очереди",
+      "В работе",
+      "На проверке",
+      "Завершено",
+    ];
     setTasks(savedTasks);
     setStatuses(savedStatuses);
   }, []);
+
+  // Сохранение в LocalStorage
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("statuses", JSON.stringify(statuses));
+  }, [tasks, statuses]);
+}
