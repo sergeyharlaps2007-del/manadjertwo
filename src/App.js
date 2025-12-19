@@ -8,3 +8,17 @@ function App() {
   const [taskText, setTaskText] = useState("");
   const [taskDate, setTaskDate] = useState("");
   const [newStatusText, setNewStatusText] = useState("");
+  
+// Загрузка LocalStorage
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const savedStatuses =
+      JSON.parse(localStorage.getItem("statuses")) || [
+        "На очереди",
+        "В работе",
+        "На проверке",
+        "Завершено",
+      ];
+    setTasks(savedTasks);
+    setStatuses(savedStatuses);
+  }, []);
