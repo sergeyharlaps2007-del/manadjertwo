@@ -27,4 +27,20 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
     localStorage.setItem("statuses", JSON.stringify(statuses));
   }, [tasks, statuses]);
+
+  const addTask = () => {
+    if (!taskText.trim() || !taskDate) {
+      alert("Введите текст и дату задачи");
+      return;
+    }
+    const newTask = {
+      id: Date.now(),
+      text: taskText.trim(),
+      date: taskDate,
+      status: statuses[0],
+    };
+    setTasks([...tasks, newTask]);
+    setTaskText("");
+    setTaskDate("");
+  };
 }
