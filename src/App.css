@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+.task-card {
+  border: 1px solid #222;
+  padding: 10px;
+  border-radius: 6px;
+  background: #f4f4f4;
+  margin-bottom: 10px;
+  cursor: grab;
+}
+
+.status-column {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 200px;
+  background: #fafafa;
+}
+
+.status-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
