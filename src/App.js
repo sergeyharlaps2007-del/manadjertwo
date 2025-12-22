@@ -52,4 +52,58 @@ function App() {
     setStatuses([...statuses, newStatusText.trim()]);
     setNewStatusText("");
   };
+  return (
+    <div className="App">
+      <h1>Менеджер задач</h1>
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <input
+          placeholder="Текст задачи"
+          value={taskText}
+          onChange={(e) => setTaskText(e.target.value)}
+        />
+        <input
+          type="date"
+          value={taskDate}
+          onChange={(e) => setTaskDate(e.target.value)}
+        />
+        <button onClick={addTask}>Добавить</button>
+      </div>
+
+      <h3>Управление статусами</h3>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <input
+          placeholder="Новый статус"
+          value={newStatusText}
+          onChange={(e) => setNewStatusText(e.target.value)}
+        />
+        <button onClick={addStatus}>Добавить статус</button>
+      </div>
+
+      {currentView === "table" ? (
+        <table border="1" width="700">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Задача</th>
+              <th>Дата</th>
+              <th>Статус</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map((task) => (
+              <tr key={task.id}>
+                <td>{task.id}</td>
+                <td>{task.text}</td>
+                <td>{task.date}</td>
+                <td>{task.status}</td>
+                <td>
+                  <button onClick={() => deleteTask(task.id)}>Удалить</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
 }
