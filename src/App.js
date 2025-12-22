@@ -43,4 +43,13 @@ function App() {
     setTaskText("");
     setTaskDate("");
   };
+  const deleteTask = (id) => {
+    setTasks(tasks.filter((t) => t.id !== id));
+  };
+
+  const addStatus = () => {
+    if (!newStatusText.trim()) return;
+    setStatuses([...statuses, newStatusText.trim()]);
+    setNewStatusText("");
+  };
 }
