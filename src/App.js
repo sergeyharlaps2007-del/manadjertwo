@@ -15,7 +15,7 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
 
-  // ===== Загрузка из LocalStorage =====
+  //Загрузка из LocalStorage
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const savedStatuses = JSON.parse(localStorage.getItem("statuses")) || [
@@ -29,13 +29,13 @@ function App() {
     setStatuses(savedStatuses);
   }, []);
 
-  // ===== Сохранение в LocalStorage =====
+  //Сохранение в LocalStorage
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
     localStorage.setItem("statuses", JSON.stringify(statuses));
   }, [tasks, statuses]);
 
-  // ===== Добавление задачи =====
+  // Добавление задачи
   const addTask = () => {
     if (!taskText.trim() || !taskDate) return;
 
@@ -53,19 +53,19 @@ function App() {
     setTaskDate("");
   };
 
-  // ===== Удаление задачи (НЕ ТРОГАЕМ) =====
+  //Удаление задачи
   const deleteTask = (id) => {
     setTasks(tasks.filter((t) => t.id !== id));
   };
 
-  // ===== Добавление статуса =====
+  //Добавление статуса
   const addStatus = () => {
     if (!newStatusText.trim()) return;
     setStatuses([...statuses, newStatusText.trim()]);
     setNewStatusText("");
   };
 
-  // ===== УДАЛЕНИЕ СТАТУСА =====
+  //УДАЛЕНИЕ СТАТУСА
   const deleteStatus = (statusToDelete) => {
     if (!window.confirm(`Удалить статус "${statusToDelete}"?`)) return;
 
@@ -81,7 +81,7 @@ function App() {
     );
   };
 
-  // ===== Drag & Drop =====
+  //Drag & Drop
   const handleDrop = (status) => {
     if (draggedId === null) return;
 
@@ -92,7 +92,7 @@ function App() {
     setDraggedId(null);
   };
 
-  // ===== Сохранение редактирования =====
+  //Сохранение редактирования
   const saveEdit = (id) => {
     if (!editingText.trim()) return;
 
@@ -136,7 +136,7 @@ function App() {
         <button onClick={addStatus}>Добавить статус</button>
       </div>
 
-      {/* Переключение вида */}
+      {/* вид переключать */}
       <div style={{ marginBottom: 20 }}>
         <button onClick={() => setCurrentView("table")}>Таблица</button>
         <button onClick={() => setCurrentView("blocks")}>Блоки</button>
