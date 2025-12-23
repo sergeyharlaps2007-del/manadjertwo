@@ -12,6 +12,9 @@ function App() {
 
   const [draggedId, setDraggedId] = useState(null);
 
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
   // ===== Загрузка из LocalStorage =====
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -34,24 +37,23 @@ function App() {
 
   // ===== Добавление задачи =====
   const addTask = () => {
-    if (!taskText.trim() || !taskDate) {
-      alert("Введите текст и дату задачи");
-      return;
-    }
+    if (!taskText.trim() || !taskDate) return;
 
-    const newTask = {
-      id: Date.now(),
-      text: taskText.trim(),
-      date: taskDate,
-      status: statuses[0],
-    };
+    setTasks([
+      ...tasks,
+      {
+        id: Date.now(),
+        text: taskText.trim(),
+        date: taskDate,
+        status: statuses[0],
+      },
+    ]);
 
-    setTasks([...tasks, newTask]);
     setTaskText("");
     setTaskDate("");
   };
 
-  // ===== Удаление задачи =====
+  // ===== Удаление задачи (НЕ ТРОГАЕМ) =====
   const deleteTask = (id) => {
     setTasks(tasks.filter((t) => t.id !== id));
   };
@@ -61,6 +63,22 @@ function App() {
     if (!newStatusText.trim()) return;
     setStatuses([...statuses, newStatusText.trim()]);
     setNewStatusText("");
+  };
+
+  // ===== УДАЛЕНИЕ СТАТУСА =====
+  const deleteStatus = (statusToDelete) => {
+    if (!window.confirm(`Удалить статус "${statusToDelete}"?`)) return;
+
+    const newStatuses = statuses.filter((s) => s !== statusToDelete);
+    setStatuses(newStatuses);
+
+    setTasks(
+      tasks.map((task) =>
+        task.status === statusToDelete
+          ? { ...task, status: newStatuses[0] || "" }
+          : task
+      )
+    );
   };
 
   // ===== Drag & Drop =====
@@ -74,12 +92,26 @@ function App() {
     setDraggedId(null);
   };
 
+  // ===== Сохранение редактирования =====
+  const saveEdit = (id) => {
+    if (!editingText.trim()) return;
+
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, text: editingText.trim() } : task
+      )
+    );
+
+    setEditingId(null);
+    setEditingText("");
+  };
+
   return (
     <div className="App">
       <h1>Менеджер задач</h1>
 
-      {/* ===== Добавление задачи ===== */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      {/* Добавление задачи */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
         <input
           placeholder="Текст задачи"
           value={taskText}
@@ -93,9 +125,9 @@ function App() {
         <button onClick={addTask}>Добавить</button>
       </div>
 
-      {/* ===== Управление статусами ===== */}
+      {/* Добавление статуса */}
       <h3>Управление статусами</h3>
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
         <input
           placeholder="Новый статус"
           value={newStatusText}
@@ -104,13 +136,13 @@ function App() {
         <button onClick={addStatus}>Добавить статус</button>
       </div>
 
-      {/* ===== Переключение видов ===== */}
-      <div style={{ marginBottom: "20px" }}>
+      {/* Переключение вида */}
+      <div style={{ marginBottom: 20 }}>
         <button onClick={() => setCurrentView("table")}>Таблица</button>
         <button onClick={() => setCurrentView("blocks")}>Блоки</button>
       </div>
 
-      {/* ===== Табличный вид ===== */}
+      {/* Таблица */}
       {currentView === "table" && (
         <table border="1" width="700">
           <thead>
@@ -138,9 +170,9 @@ function App() {
         </table>
       )}
 
-      {/* ===== Блочный вид (Drag & Drop) ===== */}
+      {/* Блоки */}
       {currentView === "blocks" && (
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div style={{ display: "flex", gap: 20 }}>
           {statuses.map((status) => (
             <div
               key={status}
@@ -148,10 +180,26 @@ function App() {
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => handleDrop(status)}
             >
-              <h2>{status}</h2>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <h2>{status}</h2>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteStatus(status);
+                  }}
+                >
+                  🗑
+                </button>
+              </div>
 
               {tasks
-                .filter((task) => task.status === status)
+                .filter((t) => t.status === status)
                 .map((task) => (
                   <div
                     key={task.id}
@@ -161,7 +209,14 @@ function App() {
                   >
                     <h4>{task.text}</h4>
                     <p>{task.date}</p>
-                    <button onClick={() => deleteTask(task.id)}>🗑</button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteTask(task.id);
+                      }}
+                    >
+                      🗑
+                    </button>
                   </div>
                 ))}
             </div>
